@@ -5,13 +5,17 @@
         <div class="container">
           <div class="columns is-centered">
             <div class="column has-text-left is-7" style="border: solid blue">
+              <!-- start form -->
               <form @submit.stop.prevent="">
-                <p style="font-size: 18px">Configuración</p>
+                <p style="font-size: 18px; font-weight: bold">Configuración</p>
+
+                <!-- start logo -->
                 <p
-                  style="font-size: 14px; margin-bottom: 10px; font-weight: bold"
+                  style="font-size: 14px; margin-bottom: 10px; margin-top: 10px; font-weight: bold"
                 >
                   Logo del espacio
                 </p>
+
                 <div class="flex-wrap-center">
                   <article class="media">
                     <figure class="media-left">
@@ -26,11 +30,9 @@
                         />
                       </p>
                     </figure>
-                    <div class="media-content">
-                      <div class="content"></div>
-                    </div>
                   </article>
-                  <div class="file-upload-form">
+
+                  <div>
                     <input
                       id="upload-photo"
                       ref="file"
@@ -47,6 +49,7 @@
                       logo
                     </label>
                   </div>
+
                   <div style="margin-top: 10px">
                     <p class="letter">
                       Este logo identificará tu espacio entre el resto.
@@ -57,15 +60,25 @@
                     </p>
                   </div>
                 </div>
-                <b-field label="Nombre del espacio" style="margin-top: 10px">
+                <!-- end logo -->
+
+                <!-- start fields -->
+                <b-field
+                  :type="colors[selectedColor[0]].type"
+                  label="Nombre del espacio"
+                  style="margin-top: 10px"
+                >
                   <b-input
-                    v-model="form.workspace"
+                    v-model="workspace"
                     placeholder="Ep: Mi espacio de trabajo"
                   ></b-input>
                 </b-field>
-                <b-field label="URL del espacio (direccion web)">
+                <b-field
+                  :type="colors[selectedColor[0]].type"
+                  label="URL del espacio (direccion web)"
+                >
                   <b-input
-                    v-model="form.workUrl"
+                    v-model="workUrl"
                     placeholder="Ep: mi.dominio"
                   ></b-input>
                 </b-field>
@@ -83,6 +96,9 @@
                   anterior pasará a estar libre y puede ser usada por otro
                   espacio en el futuro.
                 </p>
+                <!-- end fields -->
+
+                <!-- start number of people -->
                 <p style="font-weight: bold; margin-top: 20px">
                   ¿Cuántas personas trabajarán contigo, incluyendote a ti?
                 </p>
@@ -90,10 +106,11 @@
                   v-for="button in buttons"
                   :key="'person -' + button.id"
                   class="setPosition"
-                  style="margin-top: 10px"
+                  style="margin-top: 10px; margin-right: 10px"
                   @click="chosenButton(button.id)"
                 >
                   <b-button
+                    outlined
                     :focused="selectedButton.indexOf(Number(button.id)) !== -1"
                     ><b style="font-size: 14px">{{ button.value }}</b></b-button
                   >
@@ -105,31 +122,83 @@
                   Preferiblemente sube una imagen .png igual o superior a 65px a
                   72ppp con fondo transparente.
                 </p>
+                <!-- end of number of people -->
                 <br />
+
+                <!-- start theme color -->
                 <p style="margin-top: 10px; font-weight: bold">
                   Color del tema
                 </p>
-                <div
-                  v-for="color in colors"
-                  :key="color.id"
-                  class="setPosition"
-                  style="margin-top: 10px"
-                  @click="chosenColor(color.id)"
-                >
-                  <ColorsLayout
-                    :id="color.id"
-                    :colors="color.value"
-                    :chosen="selectedColor.indexOf(Number(color.id)) !== -1"
-                  />
+                <div class="row is-flex flex-wrap-center">
+                  <div
+                    v-for="color in colors"
+                    :key="color.id"
+                    class="column is-paddingless"
+                    @click="chosenColor(color.id)"
+                  >
+                    <ColorsLayout
+                      :id="color.id"
+                      :colors="color.value"
+                      :chosen="selectedColor.indexOf(Number(color.id)) !== -1"
+                      style="cursor: pointer"
+                    />
+                  </div>
                 </div>
+                <!-- end color theme -->
+
+                <!-- start workspace privacy -->
                 <p style="margin-top: 20px; font-weight: bold">
                   Privacidad del espacio
                 </p>
-                <div class="row is-flex is-marginless">
-                  <div class="column" style="border: solid red 1pt">asd</div>
-                  <div class="column" style="border: solid red 1pt">zxc</div>
+                <div class="row is-flex">
+                  <div class="column" style="border: solid red 1pt">
+                    <div>
+                      <b-radio
+                        v-model="radio"
+                        native-value="private"
+                        :type="colors[selectedColor[0]].type"
+                      >
+                        Privado
+                      </b-radio>
+                      <p class="letter">
+                        El contenido sera visible solo para ti y los miembros de
+                        tu Organizacion
+                      </p>
+                    </div>
+                  </div>
+                  <div class="column" style="border: solid red 1pt">
+                    <div>
+                      <b-radio
+                        v-model="radio"
+                        native-value="publico"
+                        :type="colors[selectedColor[0]].type"
+                      >
+                        Publico
+                      </b-radio>
+                      <p class="letter">
+                        Cualquiera con el vinculo podra ver la actividad de tu
+                        organizacion
+                      </p>
+                    </div>
+                  </div>
                 </div>
+                <!-- end workspace privacy -->
+
+                <!-- start form buttons -->
+                <div style="margin-top: 20px">
+                  <b-button
+                    :type="colors[selectedColor[0]].type"
+                    disabled
+                    style="font-size: 14px; padding: 1.5rem; margin-right: 10px"
+                    >Guardar cambios</b-button
+                  >
+                  <b-button style="font-size: 14px; padding: 1.5rem"
+                    ><b>Descartar</b></b-button
+                  >
+                </div>
+                <!--end form buttons -->
               </form>
+              <!-- end form -->
             </div>
           </div>
         </div>
@@ -145,16 +214,14 @@ export default {
   components: { ColorsLayout },
   data() {
     return {
-      selectedColor: [],
+      selectedColor: [9],
       selectedButton: [],
       photo: null,
       imageData: '',
-      form: {
-        workspace: null,
-        workUrl: null
-      },
+      workspace: null,
+      workUrl: null,
+      radio: 'private',
       file: {},
-      dropFiles: [],
       buttons: [
         { id: 0, value: 'Solo yo' },
         { id: 1, value: '2-10' },
@@ -164,21 +231,18 @@ export default {
         { id: 5, value: '500 +' }
       ],
       colors: [
-        { id: 0, value: '#39B0FF' },
-        { id: 1, value: '#04B58B' },
-        { id: 3, value: '#3E9C4B' },
-        { id: 4, value: '#B6BC00' },
-        { id: 5, value: '#E59100' },
-        { id: 6, value: '#E55C00' },
-        { id: 7, value: '#EE1F50' },
-        { id: 8, value: '#D6198A' },
-        { id: 9, value: '#B321F1' },
-        { id: 10, value: '#48B5FE' }
+        { id: 0, value: '#39B0FF', type: 'is-blue' },
+        { id: 1, value: '#04B58B', type: 'is-light-green' },
+        { id: 2, value: '#3E9C4B', type: 'is-dark-green' },
+        { id: 3, value: '#B6BC00', type: 'is-yellow' },
+        { id: 4, value: '#E59100', type: 'is-light-orange' },
+        { id: 5, value: '#E55C00', type: 'is-dark-orange' },
+        { id: 6, value: '#EE1F50', type: 'is-red' },
+        { id: 7, value: '#D6198A', type: 'is-light-purple' },
+        { id: 8, value: '#B321F1', type: 'is-dark-purple' },
+        { id: 9, value: '#48B5FE', type: 'is-primary' }
       ]
     }
-  },
-  beforeMount() {
-    this.selectedColor.push(10)
   },
   methods: {
     chosenColor(id) {
@@ -210,9 +274,7 @@ export default {
 
 .setPosition
   display: inline-block
-
-.setPosition:not(:last-child)
-  margin-right 20.6px
+  margin-right 0.5rem !importantb
 
 .setPosition:hover
   cursor pointer
@@ -222,11 +284,9 @@ img.preview
   width 100%
   border-radius 50%
 
-.file-upload-form
 label
   cursor pointer
   background #FFFFFF 0 0 no-repeat padding-box
-  border 1px solid #E4E4E4
   border-radius 5px
   opacity 1
   width 105px

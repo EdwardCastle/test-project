@@ -1,0 +1,38 @@
+@import "~bulma/sass/utilities/_all";
+
+$primary: #48B5FE;
+$blue: #39B0FF;
+$light-green: #04B58B;
+$dark-green: #3E9C4B;
+$yellow: #B6BC00;
+$light-orange: #E59100;
+$dark-orange: #E55C00;
+$red: #EE1F50;
+$light-purple: #D6198A;
+$dark-purple: #B321F1;
+$primary-invert: findColorInvert($primary);
+$blue-invert: findColorInvert($blue);
+$light-green-invert: findColorInvert($light-green);
+$dark-green-invert: findColorInvert($dark-green);
+$yellow-invert: findColorInvert($yellow);
+$light-orange-invert: findColorInvert($light-orange);
+$dark-orange-invert: findColorInvert($dark-orange);
+$red-invert: findColorInvert($red);
+$light-purple-invert: findColorInvert($light-purple);
+$dark-purple-invert: findColorInvert($dark-purple);
+
+$colors: (
+    "primary": ($primary, $primary-invert),
+    "blue": ($blue, $blue-invert),
+    "light-green": ($light-green, $light-green-invert),
+    "dark-green": ($dark-green, $dark-green-invert),
+    "yellow": ($yellow, $yellow-invert),
+    "light-orange": ($light-orange, $light-orange-invert),
+    "dark-orange": ($dark-orange, $dark-orange-invert),
+    "red": ($red, $red-invert),
+    "light-purple": ($light-purple, $light-purple-invert),
+    "dark-purple": ($dark-purple, $dark-purple-invert)
+);
+
+@import "~bulma";
+@import "~buefy/src/scss/buefy";

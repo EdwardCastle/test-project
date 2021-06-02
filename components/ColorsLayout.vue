@@ -1,8 +1,12 @@
 <template>
   <div>
     <div
-      :class="`column ${chosen ? 'chosen' : ''}`"
-      :style="`background-color: ${colors}; border-radius: 50%`"
+      :class="`column flex-wrap-center`"
+      :style="
+        !chosen
+          ? `background-color: ${colors}; border-radius: 23px; height: 45px; width: 45px`
+          : `background-color: ${colors}; border-color ${colors}; border-radius: 23px; height: 45px; width: 45px; box-shadow: 0 0 0 0.2em; opacity: 0.5`
+      "
     ></div>
   </div>
 </template>
@@ -26,7 +30,4 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.chosen
-  border solid 1pt red !important
-</style>
+<style lang="stylus" scoped></style>

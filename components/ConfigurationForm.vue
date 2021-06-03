@@ -62,26 +62,71 @@
                 </div>
                 <!-- end logo -->
 
-                <!-- start fields -->
+                <!-- start name field -->
                 <b-field
                   :type="colors[selectedColor[0]].type"
                   label="Nombre del espacio"
                   style="margin-top: 10px"
                 >
                   <b-input
-                    v-model="workspace"
+                    v-model="$v.workspace.$model"
                     placeholder="Ep: Mi espacio de trabajo"
+                    @blur="$v.workspace.$touch()"
                   ></b-input>
                 </b-field>
+                <transition name="fade">
+                  <p
+                    v-if="$v.workspace.$error"
+                    style="animation-duration: 200ms; margin-top: -10px; margin-bottom: 10px"
+                  >
+                    <Warning>
+                      <span
+                        v-show="$v.workspace.$error && !$v.workspace.required"
+                      >
+                        Debes especificar un nombre
+                      </span>
+                      <span
+                        v-show="$v.workspace.$error && !$v.workspace.maxLength"
+                      >
+                        El nombre no debe exceder de 50 letras
+                      </span>
+                    </Warning>
+                  </p>
+                </transition>
+                <!-- end name input -->
+
+                <!-- start work url input -->
                 <b-field
                   :type="colors[selectedColor[0]].type"
                   label="URL del espacio (direccion web)"
                 >
                   <b-input
-                    v-model="workUrl"
+                    v-model="$v.workUrl.$model"
                     placeholder="Ep: mi.dominio"
+                    @blur="$v.workUrl.$touch()"
                   ></b-input>
                 </b-field>
+                <transition name="fade">
+                  <p
+                    v-if="$v.workUrl.$error"
+                    style="animation-duration: 200ms; margin-top: -10px"
+                  >
+                    <Warning>
+                      <span v-show="$v.workUrl.$error && !$v.workUrl.required">
+                        Debes especificar una dirección
+                      </span>
+                      <span
+                        v-show="
+                          $v.workUrl.$error &&
+                            !$v.workUrl.url &&
+                            workUrl.length !== 0
+                        "
+                      >
+                        Debe especificar una dirección válida
+                      </span>
+                    </Warning>
+                  </p>
+                </transition>
                 <p class="letter">
                   Puedes cambiar la URL de tu espacio (dirección web) en
                   cualquier momento, pero por cortesía hacia tus compañeros de
@@ -96,7 +141,7 @@
                   anterior pasará a estar libre y puede ser usada por otro
                   espacio en el futuro.
                 </p>
-                <!-- end fields -->
+                <!-- end work url input -->
 
                 <!-- start number of people -->
                 <p style="font-weight: bold; margin-top: 20px">
@@ -140,7 +185,7 @@
                       :id="color.id"
                       :colors="color.value"
                       :chosen="selectedColor.indexOf(Number(color.id)) !== -1"
-                      style="cursor: pointer"
+                      style="cursor: pointer;"
                     />
                   </div>
                 </div>
@@ -188,8 +233,13 @@
                 <div style="margin-top: 20px">
                   <b-button
                     :type="colors[selectedColor[0]].type"
-                    disabled
+                    :disabled="
+                      imageData.length === 0 ||
+                        selectedButton.length === 0 ||
+                        $v.$invalid
+                    "
                     style="font-size: 14px; padding: 1.5rem; margin-right: 10px"
+                    @click="notifyUser"
                     >Guardar cambios</b-button
                   >
                   <b-button style="font-size: 14px; padding: 1.5rem"
@@ -208,10 +258,15 @@
 </template>
 
 <script>
+import { required, maxLength } from 'vuelidate/lib/validators'
+
 // Components
 import ColorsLayout from '~/components/ColorsLayout'
+import Warning from '~/components/Warning'
+import validators from '~/utils/validators'
+const url = validators.urlValidator
 export default {
-  components: { ColorsLayout },
+  components: { Warning, ColorsLayout },
   data() {
     return {
       selectedColor: [9],
@@ -244,6 +299,16 @@ export default {
       ]
     }
   },
+  validations: {
+    workspace: {
+      required,
+      maxLength: maxLength(25)
+    },
+    workUrl: {
+      required,
+      url
+    }
+  },
   methods: {
     chosenColor(id) {
       this.selectedColor = []
@@ -262,6 +327,22 @@ export default {
         }
         reader.readAsDataURL(input.files[0])
       }
+    },
+    notifyUser() {
+      this.$buefy.dialog.alert({
+        message: 'Se guardaron los datos',
+        type: this.colors[this.selectedColor[0]].type
+      })
+      console.log('LOGO IMAGEN EN base64: ' + this.imageData)
+      console.log('NOMBRE DEL ESPACIO: ' + this.workspace)
+      console.log('URL DEL ESPACIO: ' + this.workUrl)
+      console.log(
+        'CANTIDAD DE PERSONAS: ' + this.buttons[this.selectedButton[0]].value
+      )
+      console.log('COLOR DEL TEMA: ' + this.colors[this.selectedColor[0]].value)
+      if (this.radio === 'private')
+        console.log('PRIVACIDAD DEL ESPACIO: privado')
+      else console.log('PRIVACIDAD DEL ESPACIO: publico')
     }
   }
 }
@@ -274,7 +355,7 @@ export default {
 
 .setPosition
   display: inline-block
-  margin-right 0.5rem !importantb
+  margin-right 0.5rem !important
 
 .setPosition:hover
   cursor pointer

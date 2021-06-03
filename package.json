@@ -13,6 +13,10 @@
     "eslint-loader": "2.1.2"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.18",
+    "@fortawesome/free-brands-svg-icons": "^5.8.2",
+    "@fortawesome/free-solid-svg-icons": "^5.8.2",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
     "bulma-badge": "^3.0.1",
     "bulma-pageloader": "^0.3.0",
     "core-js": "^3.8.0",
@@ -20,13 +24,14 @@
     "node-sass": "^4.14.1",
     "nuxt": "^2.14.5",
     "nuxt-buefy": "^0.4.3",
+    "nuxt-fontawesome": "^0.4.0",
     "sass-loader": "^10.0.2",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.3",
     "vue-template-compiler": "^2.6.12",
-    "vuelidate": "^0.7.6",
+    "vuelidate": "^0.7.4",
     "vuex": "^3.5.1"
   },
   "devDependencies": {

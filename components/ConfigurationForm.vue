@@ -156,7 +156,15 @@
                 >
                   <b-button
                     outlined
-                    :focused="selectedButton.indexOf(Number(button.id)) !== -1"
+                    :style="
+                      selectedButton.indexOf(Number(button.id)) !== -1
+                        ? `border: solid ${
+                            colors[selectedColor[0]].value
+                          } 1pt; box-shadow: 0 0 5px ${
+                            colors[selectedColor[0]].value
+                          }`
+                        : ''
+                    "
                     ><b style="font-size: 14px">{{ button.value }}</b></b-button
                   >
                 </div>
@@ -174,30 +182,54 @@
                 <p style="margin-top: 10px; font-weight: bold">
                   Color del tema
                 </p>
-                <div class="row is-flex flex-wrap-center">
+                <div
+                  class="row is-flex flex-wrap-baseline"
+                  style="margin-top: 10px"
+                >
                   <div
                     v-for="color in colors"
                     :key="color.id"
-                    class="column is-paddingless"
+                    class="column has-text-centered is-paddingless"
                     @click="chosenColor(color.id)"
                   >
+                    <b-radio
+                      v-show="selectedColor.indexOf(Number(color.id)) !== -1"
+                      v-model="colors[selectedColor[0]].value"
+                      :type="color.type"
+                      :native-value="color.value"
+                      size="is-large"
+                      class="flex-wrap-baseline"
+                    ></b-radio>
                     <ColorsLayout
                       :id="color.id"
                       :colors="color.value"
                       :chosen="selectedColor.indexOf(Number(color.id)) !== -1"
-                      style="cursor: pointer;"
+                      style="cursor: pointer; z-index: 1"
                     />
                   </div>
                 </div>
                 <!-- end color theme -->
 
                 <!-- start workspace privacy -->
-                <p style="margin-top: 20px; font-weight: bold">
+                <p style="margin-top: 10px; font-weight: bold">
                   Privacidad del espacio
                 </p>
                 <div class="row is-flex">
-                  <div class="column" style="border: solid red 1pt">
-                    <div>
+                  <div class="column">
+                    <div
+                      class="column pointerable"
+                      :style="
+                        radio === 'private'
+                          ? `border: solid ${
+                              colors[selectedColor[0]].value
+                            } 1px; border-radius: 5px;
+                            box-shadow: 0 0 5px ${
+                              colors[selectedColor[0]].value
+                            }`
+                          : `border-radius: 5px; border: 2px solid #e4e4e4;`
+                      "
+                      @click="radio = 'private'"
+                    >
                       <b-radio
                         v-model="radio"
                         native-value="private"
@@ -211,11 +243,24 @@
                       </p>
                     </div>
                   </div>
-                  <div class="column" style="border: solid red 1pt">
-                    <div>
+                  <div class="column">
+                    <div
+                      class="column pointerable"
+                      :style="
+                        radio === 'public'
+                          ? `border: solid ${
+                              colors[selectedColor[0]].value
+                            } 1px; border-radius: 5px;
+                            box-shadow: 0 0 10px ${
+                              colors[selectedColor[0]].value
+                            }`
+                          : `border-radius: 5px; border: 2px solid #e4e4e4;`
+                      "
+                      @click="radio = 'public'"
+                    >
                       <b-radio
                         v-model="radio"
-                        native-value="publico"
+                        native-value="public"
                         :type="colors[selectedColor[0]].type"
                       >
                         Publico
@@ -285,6 +330,7 @@ export default {
         { id: 4, value: '51-100' },
         { id: 5, value: '500 +' }
       ],
+
       colors: [
         { id: 0, value: '#39B0FF', type: 'is-blue' },
         { id: 1, value: '#04B58B', type: 'is-light-green' },
@@ -296,7 +342,8 @@ export default {
         { id: 7, value: '#D6198A', type: 'is-light-purple' },
         { id: 8, value: '#B321F1', type: 'is-dark-purple' },
         { id: 9, value: '#48B5FE', type: 'is-primary' }
-      ]
+      ],
+      currentColor: null
     }
   },
   validations: {

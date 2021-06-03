@@ -5,7 +5,7 @@
       :style="
         !chosen
           ? `background-color: ${colors}; border-radius: 23px; height: 45px; width: 45px`
-          : `background-color: ${colors}; border-color ${colors}; border-radius: 23px; height: 45px; width: 45px; box-shadow: 0 0 0 0.2em; opacity: 0.5`
+          : ``
       "
     ></div>
   </div>

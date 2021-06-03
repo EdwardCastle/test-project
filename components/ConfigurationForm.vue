@@ -1,304 +1,279 @@
 <template>
   <section>
-    <div class="hero">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns is-centered">
-            <div class="column has-text-left is-7" style="border: solid blue">
-              <!-- start form -->
-              <form @submit.stop.prevent="">
-                <p style="font-size: 18px; font-weight: bold">Configuración</p>
+    <!-- start form -->
+    <form @submit.stop.prevent="">
+      <p style="font-size: 18px; color: #000000">Configuración</p>
 
-                <!-- start logo -->
-                <p
-                  style="font-size: 14px; margin-bottom: 10px; margin-top: 10px; font-weight: bold"
-                >
-                  Logo del espacio
-                </p>
+      <!-- start logo -->
+      <p
+        style="font-size: 14px; margin-bottom: 10px; margin-top: 10px; color: #000000"
+      >
+        Logo del espacio
+      </p>
 
-                <div class="flex-wrap-center">
-                  <article class="media">
-                    <figure class="media-left">
-                      <p
-                        class="image is-64x64"
-                        style="background: #343C4A; border-radius: 34px; opacity: 1;"
-                      >
-                        <img
-                          v-if="imageData.length > 0"
-                          class="is-rounded preview"
-                          :src="imageData"
-                        />
-                      </p>
-                    </figure>
-                  </article>
+      <div class="flex-wrap-center has-text-centered-mobile">
+        <article class="media">
+          <figure class="media-left">
+            <p
+              class="image is-64x64 has-text-centered"
+              style="background: #343C4A; border-radius: 34px; opacity: 1;"
+            >
+              <img
+                v-if="imageData.length > 0"
+                class="is-rounded preview"
+                :src="imageData"
+              />
+            </p>
+          </figure>
+        </article>
 
-                  <div>
-                    <input
-                      id="upload-photo"
-                      ref="file"
-                      type="file"
-                      accept="image/*"
-                      @change="previewImage($event)"
-                    />
-                    <label
-                      for="upload-photo"
-                      class="button"
-                      style="font-size: 14px"
-                    >
-                      <b-icon class="file-icon" icon="upload"></b-icon>Subir
-                      logo
-                    </label>
-                  </div>
+        <div>
+          <input
+            id="upload-photo"
+            ref="file"
+            type="file"
+            accept="image/*"
+            @change="previewImage($event)"
+          />
+          <label for="upload-photo" class="button" style="font-size: 14px">
+            <b-icon class="file-icon" icon="upload"></b-icon>Subir logo
+          </label>
+        </div>
 
-                  <div style="margin-top: 10px">
-                    <p class="letter">
-                      Este logo identificará tu espacio entre el resto.
-                    </p>
-                    <p class="letter" style="margin-top: 10px">
-                      Preferiblemente sube una imagen .png igual o superior a
-                      65px a 72ppp con fondo transparente.
-                    </p>
-                  </div>
-                </div>
-                <!-- end logo -->
+        <div style="margin-top: 10px">
+          <p class="letter">
+            Este logo identificará tu espacio entre el resto.
+          </p>
+          <p class="letter" style="margin-top: 10px">
+            Preferiblemente sube una imagen .png igual o superior a 65px a 72ppp
+            con fondo transparente.
+          </p>
+        </div>
+      </div>
+      <!-- end logo -->
+      <!-- start name field -->
+      <b-field
+        :type="colors[selectedColor[0]].type"
+        label="Nombre del espacio"
+        style="margin-top: 10px"
+      >
+        <b-input
+          v-model="$v.workspace.$model"
+          placeholder="Ep: Mi espacio de trabajo"
+          @blur="$v.workspace.$touch()"
+          @input="setText"
+        ></b-input>
+      </b-field>
+      <transition name="fade">
+        <p
+          v-if="$v.workspace.$error"
+          style="animation-duration: 200ms; margin-top: -10px; margin-bottom: 10px"
+        >
+          <Warning>
+            <span v-show="$v.workspace.$error && !$v.workspace.required">
+              Debes especificar un nombre
+            </span>
+            <span v-show="$v.workspace.$error && !$v.workspace.maxLength">
+              El nombre no debe exceder de 25 caracteres
+            </span>
+          </Warning>
+        </p>
+      </transition>
+      <!-- end name input -->
 
-                <!-- start name field -->
-                <b-field
-                  :type="colors[selectedColor[0]].type"
-                  label="Nombre del espacio"
-                  style="margin-top: 10px"
-                >
-                  <b-input
-                    v-model="$v.workspace.$model"
-                    placeholder="Ep: Mi espacio de trabajo"
-                    @blur="$v.workspace.$touch()"
-                  ></b-input>
-                </b-field>
-                <transition name="fade">
-                  <p
-                    v-if="$v.workspace.$error"
-                    style="animation-duration: 200ms; margin-top: -10px; margin-bottom: 10px"
-                  >
-                    <Warning>
-                      <span
-                        v-show="$v.workspace.$error && !$v.workspace.required"
-                      >
-                        Debes especificar un nombre
-                      </span>
-                      <span
-                        v-show="$v.workspace.$error && !$v.workspace.maxLength"
-                      >
-                        El nombre no debe exceder de 50 letras
-                      </span>
-                    </Warning>
-                  </p>
-                </transition>
-                <!-- end name input -->
+      <!-- start work url input -->
+      <b-field
+        :type="colors[selectedColor[0]].type"
+        label="URL del espacio (dirección web)"
+      >
+        <b-input
+          v-model="$v.workUrl.$model"
+          placeholder="Ep: mi.dominio"
+          @blur="$v.workUrl.$touch()"
+          @input="setUrl"
+        ></b-input>
+      </b-field>
+      <transition name="fade">
+        <p
+          v-if="$v.workUrl.$error"
+          style="animation-duration: 200ms; margin-top: -10px"
+        >
+          <Warning>
+            <span v-show="$v.workUrl.$error && !$v.workUrl.required">
+              Debes especificar una dirección
+            </span>
+            <span
+              v-show="
+                $v.workUrl.$error && !$v.workUrl.url && workUrl.length !== 0
+              "
+            >
+              Debe especificar una dirección válida
+            </span>
+          </Warning>
+        </p>
+      </transition>
+      <p class="letter">
+        Puedes cambiar la URL de tu espacio (dirección web) en cualquier
+        momento, pero por cortesía hacia tus compañeros de trabajo y otros
+        usuarios de Plankton, porfavor no lo hagas muy seguido :)
+      </p>
+      <p class="letter" style="margin-top: 10px">
+        Nota: Si cambias la URL de tu espacio, Plankton automáticamente
+        redireccionará desde la antigua dirección hacia la nueva. En cualquier
+        caso, deberías asegurarte que tus compañeros sepan acerca del cambio
+        porque la dirección anterior pasará a estar libre y puede ser usada por
+        otro espacio en el futuro.
+      </p>
+      <!-- end work url input -->
 
-                <!-- start work url input -->
-                <b-field
-                  :type="colors[selectedColor[0]].type"
-                  label="URL del espacio (direccion web)"
-                >
-                  <b-input
-                    v-model="$v.workUrl.$model"
-                    placeholder="Ep: mi.dominio"
-                    @blur="$v.workUrl.$touch()"
-                  ></b-input>
-                </b-field>
-                <transition name="fade">
-                  <p
-                    v-if="$v.workUrl.$error"
-                    style="animation-duration: 200ms; margin-top: -10px"
-                  >
-                    <Warning>
-                      <span v-show="$v.workUrl.$error && !$v.workUrl.required">
-                        Debes especificar una dirección
-                      </span>
-                      <span
-                        v-show="
-                          $v.workUrl.$error &&
-                            !$v.workUrl.url &&
-                            workUrl.length !== 0
-                        "
-                      >
-                        Debe especificar una dirección válida
-                      </span>
-                    </Warning>
-                  </p>
-                </transition>
-                <p class="letter">
-                  Puedes cambiar la URL de tu espacio (dirección web) en
-                  cualquier momento, pero por cortesía hacia tus compañeros de
-                  trabajo y otros usuarios de Plankton, porfavor no lo hagas muy
-                  seguido :)
-                </p>
-                <p class="letter" style="margin-top: 10px">
-                  Nota: Si cambias la URL de tu espacio, Plankton
-                  automáticamente redireccionará desde la antigua dirección
-                  hacia la nueva. En cualquier caso, deberías asegurarte que tus
-                  compañeros sepan acerca del cambio porque la dirección
-                  anterior pasará a estar libre y puede ser usada por otro
-                  espacio en el futuro.
-                </p>
-                <!-- end work url input -->
+      <!-- start number of people -->
+      <p style="color: #000000; margin-top: 20px">
+        ¿Cuántas personas trabajarán contigo, incluyendote a ti?
+      </p>
+      <div
+        v-for="button in buttons"
+        :key="'person -' + button.id"
+        class="setPosition"
+        style="margin-top: 10px; margin-right: 10px"
+        @click="chosenButton(button.id)"
+      >
+        <b-button
+          outlined
+          :style="
+            selectedButton.indexOf(Number(button.id)) !== -1
+              ? `border: solid ${activeColor} 1pt; box-shadow: 0 0 5px ${activeColor}`
+              : ''
+          "
+          ><b style="font-size: 14px">{{ button.value }}</b></b-button
+        >
+      </div>
+      <p class="letter" style="margin-top: 10px">
+        Este logo identificará tu espacio entre el resto.
+      </p>
+      <p class="letter" style="margin-top: 10px">
+        Preferiblemente sube una imagen .png igual o superior a 65px a 72ppp con
+        fondo transparente.
+      </p>
+      <!-- end of number of people -->
+      <br />
 
-                <!-- start number of people -->
-                <p style="font-weight: bold; margin-top: 20px">
-                  ¿Cuántas personas trabajarán contigo, incluyendote a ti?
-                </p>
-                <div
-                  v-for="button in buttons"
-                  :key="'person -' + button.id"
-                  class="setPosition"
-                  style="margin-top: 10px; margin-right: 10px"
-                  @click="chosenButton(button.id)"
-                >
-                  <b-button
-                    outlined
-                    :style="
-                      selectedButton.indexOf(Number(button.id)) !== -1
-                        ? `border: solid ${
-                            colors[selectedColor[0]].value
-                          } 1pt; box-shadow: 0 0 5px ${
-                            colors[selectedColor[0]].value
-                          }`
-                        : ''
-                    "
-                    ><b style="font-size: 14px">{{ button.value }}</b></b-button
-                  >
-                </div>
-                <p class="letter" style="margin-top: 10px">
-                  Este logo identificará tu espacio entre el resto.
-                </p>
-                <p class="letter" style="margin-top: 10px">
-                  Preferiblemente sube una imagen .png igual o superior a 65px a
-                  72ppp con fondo transparente.
-                </p>
-                <!-- end of number of people -->
-                <br />
+      <!-- start theme color -->
+      <p style="margin-top: 10px; color: #000000">
+        Color del tema
+      </p>
+      <div class="row is-flex flex-wrap-baseline" style="margin-top: 10px">
+        <div
+          v-for="color in colors"
+          :key="color.id"
+          class="column has-text-left is-paddingless"
+          @click="chosenColor(color.id)"
+        >
+          <b-radio
+            v-show="selectedColor.indexOf(Number(color.id)) !== -1"
+            v-model="activeColor"
+            :type="color.type"
+            :native-value="color.value"
+            size="is-large"
+            class="flex-wrap-baseline"
+          ></b-radio>
+          <ColorsLayout
+            :id="color.id"
+            :colors="color.value"
+            :chosen="selectedColor.indexOf(Number(color.id)) !== -1"
+            style="cursor: pointer; z-index: 1"
+          />
+        </div>
+      </div>
+      <!-- end color theme -->
 
-                <!-- start theme color -->
-                <p style="margin-top: 10px; font-weight: bold">
-                  Color del tema
-                </p>
-                <div
-                  class="row is-flex flex-wrap-baseline"
-                  style="margin-top: 10px"
-                >
-                  <div
-                    v-for="color in colors"
-                    :key="color.id"
-                    class="column has-text-centered is-paddingless"
-                    @click="chosenColor(color.id)"
-                  >
-                    <b-radio
-                      v-show="selectedColor.indexOf(Number(color.id)) !== -1"
-                      v-model="colors[selectedColor[0]].value"
-                      :type="color.type"
-                      :native-value="color.value"
-                      size="is-large"
-                      class="flex-wrap-baseline"
-                    ></b-radio>
-                    <ColorsLayout
-                      :id="color.id"
-                      :colors="color.value"
-                      :chosen="selectedColor.indexOf(Number(color.id)) !== -1"
-                      style="cursor: pointer; z-index: 1"
-                    />
-                  </div>
-                </div>
-                <!-- end color theme -->
-
-                <!-- start workspace privacy -->
-                <p style="margin-top: 10px; font-weight: bold">
-                  Privacidad del espacio
-                </p>
-                <div class="row is-flex">
-                  <div class="column">
-                    <div
-                      class="column pointerable"
-                      :style="
-                        radio === 'private'
-                          ? `border: solid ${
-                              colors[selectedColor[0]].value
-                            } 1px; border-radius: 5px;
-                            box-shadow: 0 0 5px ${
-                              colors[selectedColor[0]].value
-                            }`
-                          : `border-radius: 5px; border: 2px solid #e4e4e4;`
-                      "
-                      @click="radio = 'private'"
-                    >
-                      <b-radio
-                        v-model="radio"
-                        native-value="private"
-                        :type="colors[selectedColor[0]].type"
-                      >
-                        Privado
-                      </b-radio>
-                      <p class="letter">
-                        El contenido sera visible solo para ti y los miembros de
-                        tu Organizacion
-                      </p>
-                    </div>
-                  </div>
-                  <div class="column">
-                    <div
-                      class="column pointerable"
-                      :style="
-                        radio === 'public'
-                          ? `border: solid ${
-                              colors[selectedColor[0]].value
-                            } 1px; border-radius: 5px;
-                            box-shadow: 0 0 10px ${
-                              colors[selectedColor[0]].value
-                            }`
-                          : `border-radius: 5px; border: 2px solid #e4e4e4;`
-                      "
-                      @click="radio = 'public'"
-                    >
-                      <b-radio
-                        v-model="radio"
-                        native-value="public"
-                        :type="colors[selectedColor[0]].type"
-                      >
-                        Publico
-                      </b-radio>
-                      <p class="letter">
-                        Cualquiera con el vinculo podra ver la actividad de tu
-                        organizacion
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <!-- end workspace privacy -->
-
-                <!-- start form buttons -->
-                <div style="margin-top: 20px">
-                  <b-button
-                    :type="colors[selectedColor[0]].type"
-                    :disabled="
-                      imageData.length === 0 ||
-                        selectedButton.length === 0 ||
-                        $v.$invalid
-                    "
-                    style="font-size: 14px; padding: 1.5rem; margin-right: 10px"
-                    @click="notifyUser"
-                    >Guardar cambios</b-button
-                  >
-                  <b-button style="font-size: 14px; padding: 1.5rem"
-                    ><b>Descartar</b></b-button
-                  >
-                </div>
-                <!--end form buttons -->
-              </form>
-              <!-- end form -->
-            </div>
+      <!-- start workspace privacy -->
+      <p style="margin-top: 10px; color: #000000">
+        Privacidad del espacio
+      </p>
+      <div class="row is-flex">
+        <div class="column is-paddingless">
+          <div
+            class="column pointerable"
+            style="width: 98% !important;"
+            :style="
+              radio === 'private'
+                ? `border: solid ${activeColor} 1px; border-radius: 5px;
+                            box-shadow: 0 0 5px ${activeColor}`
+                : `border-radius: 5px; border: 2px solid #e4e4e4;`
+            "
+            @click="radio = 'private'"
+          >
+            <b-radio
+              v-model="radio"
+              native-value="private"
+              :type="colors[selectedColor[0]].type"
+            >
+              <p
+                :style="
+                  radio === 'private' ? `color: ${activeColor}` : `color: black`
+                "
+              >
+                Privado
+              </p>
+            </b-radio>
+            <p class="letter">
+              El contenido sera visible solo para ti y los miembros de tu
+              Organizacion
+            </p>
+          </div>
+        </div>
+        <div class="column is-paddingless">
+          <div
+            class="column pointerable"
+            style="width: 98% !important;"
+            :style="
+              radio === 'public'
+                ? `border: solid ${activeColor} 1px; border-radius: 5px;
+                            box-shadow: 0 0 10px ${activeColor}`
+                : `border-radius: 5px; border: 2px solid #e4e4e4;`
+            "
+            @click="radio = 'public'"
+          >
+            <b-radio
+              v-model="radio"
+              native-value="public"
+              :type="colors[selectedColor[0]].type"
+            >
+              <p
+                :style="
+                  radio === 'public' ? `color: ${activeColor}` : `color: black`
+                "
+              >
+                Público
+              </p>
+            </b-radio>
+            <p class="letter">
+              Cualquiera con el vinculo podra ver la actividad de tu
+              organizacion
+            </p>
           </div>
         </div>
       </div>
-    </div>
+      <!-- end workspace privacy -->
+
+      <!-- start form buttons -->
+      <div style="margin-top: 30px">
+        <b-button
+          :type="colors[selectedColor[0]].type"
+          :disabled="
+            imageData.length === 0 || selectedButton.length === 0 || $v.$invalid
+          "
+          style="font-size: 14px; padding: 1.5rem; margin-right: 10px"
+          @click="notifyUser"
+          >Guardar cambios</b-button
+        >
+        <b-button style="font-size: 14px; padding: 1.5rem"
+          ><b>Descartar</b></b-button
+        >
+      </div>
+      <!--end form buttons -->
+    </form>
+    <!-- end form -->
   </section>
 </template>
 
@@ -323,7 +298,7 @@ export default {
       radio: 'private',
       file: {},
       buttons: [
-        { id: 0, value: 'Solo yo' },
+        { id: 0, value: 'Sólo yo' },
         { id: 1, value: '2-10' },
         { id: 2, value: '11-25' },
         { id: 3, value: '26-50' },
@@ -346,6 +321,11 @@ export default {
       currentColor: null
     }
   },
+  computed: {
+    activeColor() {
+      return this.$store.getters['color/get']
+    }
+  },
   validations: {
     workspace: {
       required,
@@ -360,6 +340,7 @@ export default {
     chosenColor(id) {
       this.selectedColor = []
       this.selectedColor.push(Number(id))
+      this.$store.commit('color/set', this.colors[this.selectedColor[0]].value)
     },
     chosenButton(id) {
       this.selectedButton = []
@@ -375,6 +356,12 @@ export default {
         reader.readAsDataURL(input.files[0])
       }
     },
+    setUrl() {
+      this.$store.commit('url/set', this.workUrl)
+    },
+    setText() {
+      this.$store.commit('text/set', this.workspace)
+    },
     notifyUser() {
       this.$buefy.dialog.alert({
         message: 'Se guardaron los datos',
@@ -386,10 +373,10 @@ export default {
       console.log(
         'CANTIDAD DE PERSONAS: ' + this.buttons[this.selectedButton[0]].value
       )
-      console.log('COLOR DEL TEMA: ' + this.colors[this.selectedColor[0]].value)
+      console.log('COLOR DEL TEMA: ' + this.activeColor)
       if (this.radio === 'private')
         console.log('PRIVACIDAD DEL ESPACIO: privado')
-      else console.log('PRIVACIDAD DEL ESPACIO: publico')
+      else console.log('PRIVACIDAD DEL ESPACIO: público')
     }
   }
 }

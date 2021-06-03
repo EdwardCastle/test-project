@@ -1,6 +1,5 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
-  target: 'static',
   head: {
     title: 'test_project',
     htmlAttrs: {
@@ -21,9 +20,11 @@ export default {
     'bulma-badge/dist/css/bulma-badge.min.css',
     'bulma-pageloader/dist/css/bulma-pageloader.min.css'
   ],
-
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: '~/plugins/vuelidate' }],
+  plugins: [
+    { src: '~/plugins/vuelidate' },
+    { src: '~/plugins/vue-window-size', ssr: true }
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
 

@@ -1,5 +1,10 @@
+bodyody, button, input, optgroup, select, textarea {
+    font-family: "Family Fira Sans" !important
+}
+
 input[type="file"]
   display none
+
 .flex-wrap-center
   display flex
   flex-wrap wrap
@@ -9,8 +14,8 @@ input[type="file"]
 .flex-wrap-baseline
   display flex
   flex-wrap wrap
-  align-items baseline
-  align-content baseline
+  align-items left
+  align-content left
 
 .image.is-64x64
   height 67px !important
@@ -39,6 +44,15 @@ label[data-v-2fc2760f]
 
 .input
   border-color #e4e4e4 !important
+
 .input:focus
   border-color #e4e4e4 !important
   box-shadow none !important
+
+input::placeholder
+  color #00000080 !important
+  font-size 14px !important
+
+.label
+  color black !important
+  font-weight unset !important

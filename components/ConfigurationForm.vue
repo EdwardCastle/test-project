@@ -16,13 +16,19 @@
           <figure class="media-left">
             <p
               class="image is-64x64 has-text-centered"
-              style="background: #343C4A; border-radius: 34px; opacity: 1;"
+              style="background: #343C4A; border-radius: 34px"
+              :style="imageData.length === 0 ? 'padding-top: 20%' : ''"
             >
               <img
                 v-if="imageData.length > 0"
                 class="is-rounded preview"
                 :src="imageData"
               />
+              <b
+                v-show="imageData.length === 0"
+                style="color: #ffffff; font-size: 30px"
+                >B</b
+              >
             </p>
           </figure>
         </article>
@@ -36,17 +42,19 @@
             @change="previewImage($event)"
           />
           <label for="upload-photo" class="button" style="font-size: 14px">
-            <b-icon class="file-icon" icon="upload"></b-icon>Subir logo
+            <img :src="uploadIcon" alt="" style="margin-right: 10px" /> Subir
+            logo
           </label>
         </div>
 
         <div style="margin-top: 10px">
           <p class="letter">
-            Este logo identificará tu espacio entre el resto.
-          </p>
-          <p class="letter" style="margin-top: 10px">
-            Preferiblemente sube una imagen .png igual o superior a 65px a 72ppp
-            con fondo transparente.
+            <Warning>
+              Este logo identificará tu espacio entre el resto.
+              <br style="margin-bottom: 10px" />
+              Preferiblemente sube una imagen .png igual o superior a 65px a con
+              fondo transparente.
+            </Warning>
           </p>
         </div>
       </div>
@@ -96,7 +104,7 @@
       <transition name="fade">
         <p
           v-if="$v.workUrl.$error"
-          style="animation-duration: 200ms; margin-top: -10px"
+          style="animation-duration: 200ms; margin-top: -10px; margin-bottom: 10px"
         >
           <Warning>
             <span v-show="$v.workUrl.$error && !$v.workUrl.required">
@@ -113,20 +121,22 @@
         </p>
       </transition>
       <p class="letter">
-        Puedes cambiar la URL de tu espacio (dirección web) en cualquier
-        momento, pero por cortesía hacia tus compañeros de trabajo y otros
-        usuarios de Plankton, porfavor no lo hagas muy seguido :)
-      </p>
-      <p class="letter" style="margin-top: 10px">
-        Nota: Si cambias la URL de tu espacio, Plankton automáticamente
-        redireccionará desde la antigua dirección hacia la nueva. En cualquier
-        caso, deberías asegurarte que tus compañeros sepan acerca del cambio
-        porque la dirección anterior pasará a estar libre y puede ser usada por
-        otro espacio en el futuro.
-      </p>
-      <!-- end work url input -->
+        <Warning>
+          Puedes cambiar la URL de tu espacio (dirección web) en cualquier
+          momento, pero por cortesía hacia tus compañeros de trabajo y otros
+          usuarios de Plankton, porfavor no lo hagas muy seguido :)
+          <br style="margin-bottom: 10px" />
+          Nota: Si cambias la URL de tu espacio, Plankton automáticamente
+          redireccionará desde la antigua dirección hacia la nueva. En cualquier
+          caso, deberías asegurarte que tus compañeros sepan acerca del cambio
+          porque la dirección anterior pasará a estar libre y puede ser usada
+          por otro espacio en el futuro.
+        </Warning>
+        <!-- end work url input -->
 
-      <!-- start number of people -->
+        <!-- start number of people -->
+      </p>
+
       <p style="color: #000000; margin-top: 20px">
         ¿Cuántas personas trabajarán contigo, incluyendote a ti?
       </p>
@@ -148,14 +158,15 @@
         >
       </div>
       <p class="letter" style="margin-top: 10px">
-        Este logo identificará tu espacio entre el resto.
-      </p>
-      <p class="letter" style="margin-top: 10px">
-        Preferiblemente sube una imagen .png igual o superior a 65px a 72ppp con
-        fondo transparente.
+        <Warning>
+          Este logo identificará tu espacio entre el resto.
+          <br style="margin-bottom: 10px" />
+          Preferiblemente sube una imagen .png igual o superior a 65px a 72ppp
+          con fondo transparente.
+        </Warning>
       </p>
       <!-- end of number of people -->
-      <br />
+
       <!-- start theme color -->
       <p style="margin-top: 10px; color: #000000">
         Color del tema
@@ -173,8 +184,9 @@
             :type="color.type"
             :native-value="color.value"
             :size="isMobile ? 'is-medium' : 'is-large'"
-            class="flex-wrap-baseline"
-            style="margin-top: -2px !important;"
+            :style="
+              `margin-top: -2px !important; box-shadow: 0 0 10px ${activeColor}; border-radius: 50%; height: auto; width: auto !important`
+            "
           ></b-radio>
           <ColorsLayout
             :id="color.id"
@@ -257,7 +269,10 @@
       <!-- end workspace privacy -->
 
       <!-- start form buttons -->
-      <div :class="isMobile ? 'bottom-bar' : ''" style="margin-top: 30px">
+      <div
+        :class="isMobile ? 'bottom-bar has-text-centered' : ''"
+        style="margin-top: 30px"
+      >
         <b-button
           :type="colors[selectedColor[0]].type"
           :disabled="
@@ -328,6 +343,9 @@ export default {
       return this.$screen.width <= 768
       // 'is-tablet': this.$screen.width > 768 && this.$screen.width <= 1024,
       // 'is-desktop': this.$screen.width > 1024
+    },
+    uploadIcon() {
+      return '/img/upload.svg'
     }
   },
   validations: {
@@ -416,7 +434,9 @@ label
   border-top 1px solid #f5f5f5
   bottom 0
   height 75px
+  width 100%
   background #ffffff
   z-index 1
+  margin-left  -25px
   padding-top 10px
 </style>

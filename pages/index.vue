@@ -9,9 +9,9 @@
         </div>
         <div class="column is-hidden-tablet is-hidden-mobile"></div>
         <div
-          class="column is-paddingless is-hidden-mobile is-hidden-tablet-only hero is-fullheight"
+          class="column is-paddingless is-hidden-mobile is-hidden-tablet-only has-text-right"
         >
-          <Preview class="hero-body" style="margin-top: -20%" />
+          <Preview style="margin-top: 10rem" />
         </div>
       </div>
     </div>

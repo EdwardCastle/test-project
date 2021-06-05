@@ -1,6 +1,10 @@
 <template>
-  <p>
-    <font-awesome-icon :icon="['fas', 'exclamation']" />
+  <p class="level-left">
+    <img
+      :src="exclamationIcon"
+      alt=""
+      style="width: 17px; height: 17px; margin-right: 10px"
+    />
     <slot></slot>
   </p>
 </template>
@@ -12,8 +16,16 @@ export default {
       type: String,
       default: ''
     }
+  },
+  computed: {
+    exclamationIcon() {
+      return '/img/exclamation.svg'
+    }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="stylus">
+.level-left
+  align-items unset !important
+</style>

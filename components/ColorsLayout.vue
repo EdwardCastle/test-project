@@ -1,10 +1,20 @@
 <template>
   <div>
     <div
-      :class="`column flex-wrap-center`"
+      v-if="!isMobile"
+      class="`column flex-wrap-center`"
       :style="
         !chosen
           ? `background-color: ${colors}; border-radius: 23px; height: 45px; width: 45px`
+          : ``
+      "
+    ></div>
+    <div
+      v-else
+      class="`column flex-wrap-center`"
+      :style="
+        !chosen
+          ? `background-color: ${colors}; border-radius: 23px; height: 20px; width: 20px`
           : ``
       "
     ></div>
@@ -25,6 +35,11 @@ export default {
     chosen: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    isMobile() {
+      return this.$screen.width <= 768
     }
   }
 }

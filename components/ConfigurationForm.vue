@@ -156,7 +156,6 @@
       </p>
       <!-- end of number of people -->
       <br />
-
       <!-- start theme color -->
       <p style="margin-top: 10px; color: #000000">
         Color del tema
@@ -173,8 +172,9 @@
             v-model="activeColor"
             :type="color.type"
             :native-value="color.value"
-            size="is-large"
+            :size="isMobile ? 'is-medium' : 'is-large'"
             class="flex-wrap-baseline"
+            style="margin-top: -2px !important;"
           ></b-radio>
           <ColorsLayout
             :id="color.id"
@@ -190,7 +190,7 @@
       <p style="margin-top: 10px; color: #000000">
         Privacidad del espacio
       </p>
-      <div class="row is-flex">
+      <div class="row is-flex" :style="isMobile ? 'margin-bottom: 40px' : ''">
         <div class="column is-paddingless">
           <div
             class="column pointerable"
@@ -257,7 +257,7 @@
       <!-- end workspace privacy -->
 
       <!-- start form buttons -->
-      <div style="margin-top: 30px">
+      <div :class="isMobile ? 'bottom-bar' : ''" style="margin-top: 30px">
         <b-button
           :type="colors[selectedColor[0]].type"
           :disabled="
@@ -305,7 +305,6 @@ export default {
         { id: 4, value: '51-100' },
         { id: 5, value: '500 +' }
       ],
-
       colors: [
         { id: 0, value: '#39B0FF', type: 'is-blue' },
         { id: 1, value: '#04B58B', type: 'is-light-green' },
@@ -324,6 +323,11 @@ export default {
   computed: {
     activeColor() {
       return this.$store.getters['color/get']
+    },
+    isMobile() {
+      return this.$screen.width <= 768
+      // 'is-tablet': this.$screen.width > 768 && this.$screen.width <= 1024,
+      // 'is-desktop': this.$screen.width > 1024
     }
   },
   validations: {
@@ -406,4 +410,13 @@ label
   opacity 1
   width 105px
   height 32px
+
+.bottom-bar
+  position fixed
+  border-top 1px solid #f5f5f5
+  bottom 0
+  height 75px
+  background #ffffff
+  z-index 1
+  padding-top 10px
 </style>
